@@ -15,6 +15,24 @@ import {
   "success": true,
   "data": [
     {
+      "endpoint": "/api/",
+      "method": "GET",
+      "description": "Returns this API help documentation.",
+      "authentication": "None",
+      "parameters": [],
+      "example_response": {
+        "success": true,
+        "data": [
+          {
+            "endpoint": "/api/",
+            "method": "GET",
+            "description": "API help documentation",
+            "authentication": "None"
+          }
+        ]
+      }
+    },
+    {
       "endpoint": "/api/top-authors/",
       "method": "GET",
       "parameters": [
@@ -119,6 +137,33 @@ import {
         }
       ],
       "description": "Generates a QR code for the provided URL"
+    },
+    {
+      "endpoint": "/api/compress-image/",
+      "method": "POST",
+      "description": "Compresses an uploaded image with specified quality and format, returning the image file.",
+      "authentication": "Required (Django session or token)",
+      "parameters": [
+        {
+          "name": "image",
+          "type": "file",
+          "required": true,
+          "description": "Image file to compress (jpg, jpeg, png, webp)"
+        },
+        {
+          "name": "quality",
+          "type": "integer",
+          "required": false,
+          "description": "Compression quality (0-10, default: 0)"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "required": false,
+          "description": "Output format (jpg, png, webp, default: same as input)"
+        }
+      ],
+      "example_response": "Binary image file"
     }
   ]
 }
