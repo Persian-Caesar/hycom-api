@@ -190,7 +190,10 @@ async function topAuthors(limit: number = 10) {
     const response = await fetch(hycom.url + hycom.topAuthor + `?limit=${limit}`);
     const data: TopAuthorResponse = await response.json();
 
-    return data.data;
+    return data.data.map(a => {
+      a.tag = a.display_name + "-" + a.profile_id
+      return a;
+    });
   } catch {
     return null;
   }
@@ -199,13 +202,13 @@ async function topAuthors(limit: number = 10) {
 /**
  * Returns published posts by a specific author.
  * 
- * @param display_name Author display name and profile ID. (format: name-code)
+ * @param tag Author display name and profile ID. (format: name-code)
  * @param limit Number of authors to return. (1-50)
  * @param sort Sort order. (newest, most_viewed)
  */
-async function authorPosts(display_name: string, limit: number = 10, sort: SortParametr = "newest") {
+async function authorPosts(tag: string, limit: number = 10, sort: SortParametr = "newest") {
   try {
-    const response = await fetch(hycom.url + hycom.authorPosts + `/${display_name}?limit=${limit}&sort=${sort}`);
+    const response = await fetch(hycom.url + hycom.authorPosts + `/${tag}?limit=${limit}&sort=${sort}`);
     const data: AuthorPostsResponse = await response.json();
 
     return data.data;

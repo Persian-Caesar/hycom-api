@@ -2,6 +2,7 @@ export type SortParametr = "newest" | "most_viewed";
 export type ExploreSortParametr = "recommended" | SortParametr;
 
 export interface Author {
+    tag: string;
     display_name: string;
     profile_id: string;
     url: string;

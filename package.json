@@ -1,6 +1,6 @@
 {
   "name": "@persian-caesar/hycom-api",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A package for easy using hycom.ir api service.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
