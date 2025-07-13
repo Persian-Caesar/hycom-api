@@ -1,3 +1,4 @@
+import { repeatAction } from "./functions";
 import {
   AuthorPostsResponse,
   ExploreResponse,
@@ -10,164 +11,6 @@ import {
   TopAuthorResponse
 } from "./types";
 
-/*
-{
-  "success": true,
-  "data": [
-    {
-      "endpoint": "/api/",
-      "method": "GET",
-      "description": "Returns this API help documentation.",
-      "authentication": "None",
-      "parameters": [],
-      "example_response": {
-        "success": true,
-        "data": [
-          {
-            "endpoint": "/api/",
-            "method": "GET",
-            "description": "API help documentation",
-            "authentication": "None"
-          }
-        ]
-      }
-    },
-    {
-      "endpoint": "/api/top-authors/",
-      "method": "GET",
-      "parameters": [
-        {
-          "name": "limit",
-          "type": "integer",
-          "default": 10,
-          "description": "Number of authors to return (1-50)"
-        }
-      ],
-      "description": "Returns top authors sorted by total views"
-    },
-    {
-      "endpoint": "/api/author-posts/{display_name}/",
-      "method": "GET",
-      "parameters": [
-        {
-          "name": "display_name",
-          "type": "string",
-          "description": "Author display name and profile ID (format: name-code)"
-        },
-        {
-          "name": "limit",
-          "type": "integer",
-          "default": 10,
-          "description": "Number of posts to return (1-50)"
-        },
-        {
-          "name": "sort",
-          "type": "string",
-          "default": "newest",
-          "description": "Sort order (newest, most_viewed)"
-        }
-      ],
-      "description": "Returns published posts by a specific author"
-    },
-    {
-      "endpoint": "/api/tags/",
-      "method": "GET",
-      "parameters": [
-        {
-          "name": "limit",
-          "type": "integer",
-          "default": 20,
-          "description": "Number of tags to return (1-100)"
-        }
-      ],
-      "description": "Returns tags with their post counts"
-    },
-    {
-      "endpoint": "/api/explore/",
-      "method": "GET",
-      "parameters": [
-        {
-          "name": "search",
-          "type": "string",
-          "default": "",
-          "description": "Search query for title, tags, or author"
-        },
-        {
-          "name": "page",
-          "type": "integer",
-          "default": 1,
-          "description": "Page number for pagination"
-        },
-        {
-          "name": "limit",
-          "type": "integer",
-          "default": 12,
-          "description": "Number of posts per page (1-50)"
-        },
-        {
-          "name": "sort",
-          "type": "string",
-          "default": "recommended",
-          "description": "Sort order (recommended, newest, most_viewed)"
-        },
-        {
-          "name": "tag",
-          "type": "string",
-          "default": "",
-          "description": "Filter by tag slug"
-        }
-      ],
-      "description": "Returns a paginated list of published articles with filtering and sorting"
-    },
-    {
-      "endpoint": "/api/site-info/",
-      "method": "GET",
-      "parameters": [],
-      "description": "Returns site statistics including last post, total views, total posts, and total authors"
-    },
-    {
-      "endpoint": "/api/qr-code/",
-      "method": "GET",
-      "parameters": [
-        {
-          "name": "url",
-          "type": "string",
-          "required": true,
-          "description": "URL to encode in QR code"
-        }
-      ],
-      "description": "Generates a QR code for the provided URL"
-    },
-    {
-      "endpoint": "/api/compress-image/",
-      "method": "POST",
-      "description": "Compresses an uploaded image with specified quality and format, returning the image file.",
-      "authentication": "Required (Django session or token)",
-      "parameters": [
-        {
-          "name": "image",
-          "type": "file",
-          "required": true,
-          "description": "Image file to compress (jpg, jpeg, png, webp)"
-        },
-        {
-          "name": "quality",
-          "type": "integer",
-          "required": false,
-          "description": "Compression quality (0-10, default: 0)"
-        },
-        {
-          "name": "format",
-          "type": "string",
-          "required": false,
-          "description": "Output format (jpg, png, webp, default: same as input)"
-        }
-      ],
-      "example_response": "Binary image file"
-    }
-  ]
-}
- */
 const hycom = {
   url: "https://hycom.ir",
   topAuthor: "/api/top-authors",
@@ -187,8 +30,10 @@ const hycom = {
  */
 async function topAuthors(limit: number = 10) {
   try {
-    const response = await fetch(hycom.url + hycom.topAuthor + `?limit=${limit}`);
-    const data: TopAuthorResponse = await response.json();
+    const response = await repeatAction(async () =>
+      await fetch(hycom.url + hycom.topAuthor + `?limit=${limit}`)
+    );
+    const data: TopAuthorResponse = await response!.json();
 
     return data.data.map(a => {
       a.tag = a.display_name + "-" + a.profile_id
@@ -208,8 +53,10 @@ async function topAuthors(limit: number = 10) {
  */
 async function authorPosts(tag: string, limit: number = 10, sort: SortParametr = "newest") {
   try {
-    const response = await fetch(hycom.url + hycom.authorPosts + `/${tag}?limit=${limit}&sort=${sort}`);
-    const data: AuthorPostsResponse = await response.json();
+    const response = await repeatAction(async () =>
+      await fetch(hycom.url + hycom.authorPosts + `/${tag}?limit=${limit}&sort=${sort}`)
+    );
+    const data: AuthorPostsResponse = await response!.json();
 
     return data.data;
   } catch {
@@ -224,8 +71,10 @@ async function authorPosts(tag: string, limit: number = 10, sort: SortParametr =
  */
 async function getTags(limit: number = 20) {
   try {
-    const response = await fetch(hycom.url + hycom.tags + `?limit=${limit}`);
-    const data: TagsResponse = await response.json();
+    const response = await repeatAction(async () =>
+      await fetch(hycom.url + hycom.tags + `?limit=${limit}`)
+    );
+    const data: TagsResponse = await response!.json();
 
     return data.data;
   } catch {
@@ -244,10 +93,16 @@ async function getTags(limit: number = 20) {
  */
 async function explore(search: string = "", page: number = 1, limit: number = 12, sort: ExploreSortParametr = "newest", tag: string = "") {
   try {
-    const response = await fetch(hycom.url + hycom.explore + `?search=${search}&page=${page}&limit=${limit}&sort=${sort}&tag=${tag}`);
-    const data: ExploreResponse = await response.json();
+    const response = await repeatAction(async () =>
+      await fetch(hycom.url + hycom.explore + `?search=${search}&page=${page}&limit=${limit}&sort=${sort}&tag=${tag}`)
+    );
+    const data: ExploreResponse = await response!.json();
 
-    return data.data;
+    return data.data.map(post => {
+      post.author_tag = post.author_name + "-" + post.author_name_id
+
+      return post;
+    });
   } catch {
     return null;
   }
@@ -259,12 +114,15 @@ async function explore(search: string = "", page: number = 1, limit: number = 12
 async function websiteInformation() {
   try {
     const now = Date.now();
-    const response = await fetch(hycom.url + hycom.siteInformation);
-    const data: WebSiteInformationResponse = await response.json();
+    const response = await repeatAction(async () =>
+      await fetch(hycom.url + hycom.siteInformation)
+    );
+    const data: WebSiteInformationResponse = await response!.json();
     const siteInfo = data.data as any as SiteInformation;
 
     siteInfo.ping = Date.now() - now;
     siteInfo.last_post = (await lastPosts(1))![0];
+
     return siteInfo;
   } catch {
     return null;
@@ -278,10 +136,7 @@ async function websiteInformation() {
  */
 async function lastPosts(limit: number = 10) {
   try {
-    const response = await fetch(hycom.url + hycom.explore + `?page=1&limit=${limit}&sort=newest`);
-    const data: ExploreResponse = await response.json();
-
-    return data.data;
+    return await explore(undefined, 1, limit, "newest");
   } catch {
     return null;
   }

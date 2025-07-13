@@ -15,7 +15,7 @@ export interface TopAuthorResponse {
     data: Author[];
 }
 
-export interface Post {
+export interface AuthorPost {
     url: string;
     title: string;
     summary: string;
@@ -28,9 +28,13 @@ export interface Post {
 }
 export interface AuthorPostsResponse {
     success: boolean;
-    data: Post[];
+    data: AuthorPost[];
 }
 
+export interface PostTag {
+    name: string;
+    slug: string;
+}
 export interface Tag {
     name: string;
     slug: string;
@@ -39,6 +43,23 @@ export interface Tag {
 export interface TagsResponse {
     success: boolean;
     data: Tag[];
+}
+
+export interface Post {
+    url: string;
+    title: string;
+    summary: string;
+    image: string;
+    view_count: number;
+    like_count: number;
+    created_at: string;
+    tags: PostTag[];
+    reading_time: number;
+    author_name: string;
+    author_name_id: string;
+    author_image: string;
+    author_tag: string;
+    time_ago: string;
 }
 
 export interface ExploreResponse {
