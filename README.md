@@ -163,7 +163,7 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 ---
 
 ⌨️ Built with ❤️ by **[Persian-Caesar](https://github.com/Persian-Caesar)**. Don’t forget to ⭐️ the repo!
-(This project about [hycom.ir](https://hycom.ir) by [Aria](https://github.com/xo-aria)
+(This project about [hycom.ir](https://hycom.ir) by [Aria](https://github.com/xo-aria) developping.)
 
 
 ## Contact
