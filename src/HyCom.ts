@@ -1,4 +1,3 @@
-import { repeatAction } from "./functions";
 import {
   AuthorPostsResponse,
   ExploreResponse,
@@ -8,8 +7,10 @@ import {
   WebSiteInformationResponse,
   SortParametr,
   TagsResponse,
-  TopAuthorResponse
+  TopAuthorResponse,
+  PostTag
 } from "./types";
+import { repeatAction } from "./functions";
 
 const hycom = {
   url: "https://hycom.ir",
@@ -39,7 +40,9 @@ async function topAuthors(limit: number = 10) {
       a.tag = a.display_name + "-" + a.profile_id
       return a;
     });
-  } catch {
+  }
+
+  catch {
     return null;
   }
 }
@@ -59,7 +62,9 @@ async function authorPosts(tag: string, limit: number = 10, sort: SortParametr =
     const data: AuthorPostsResponse = await response!.json();
 
     return data.data;
-  } catch {
+  }
+
+  catch {
     return null;
   }
 }
@@ -77,7 +82,9 @@ async function getTags(limit: number = 20) {
     const data: TagsResponse = await response!.json();
 
     return data.data;
-  } catch {
+  }
+
+  catch {
     return null;
   }
 }
@@ -99,11 +106,16 @@ async function explore(search: string = "", page: number = 1, limit: number = 12
     const data: ExploreResponse = await response!.json();
 
     return data.data.map(post => {
-      post.author_tag = post.author_name + "-" + post.author_name_id
+      post.author_tag = post.author_name_id;
+      post.author_image = hycom.url + "/cdn" + post.author_image
+      post.image = hycom.url + post.image
+      post.tags = post.tags.map(a => (a as any as PostTag).name);
 
       return post;
     });
-  } catch {
+  }
+
+  catch {
     return null;
   }
 }
@@ -124,7 +136,9 @@ async function websiteInformation() {
     siteInfo.last_post = (await lastPosts(1))![0];
 
     return siteInfo;
-  } catch {
+  }
+
+  catch {
     return null;
   }
 }

@@ -53,7 +53,7 @@ export interface Post {
     view_count: number;
     like_count: number;
     created_at: string;
-    tags: PostTag[];
+    tags: string[];
     reading_time: number;
     author_name: string;
     author_name_id: string;
@@ -61,7 +61,6 @@ export interface Post {
     author_tag: string;
     time_ago: string;
 }
-
 export interface ExploreResponse {
     success: boolean;
     data: Post[];
